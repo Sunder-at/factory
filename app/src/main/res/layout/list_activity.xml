@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_activity"
-    tools:context=".ListActivity">
+    tools:context=".activities.ListActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listed_items_view"

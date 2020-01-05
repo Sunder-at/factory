@@ -13,11 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ContentActivity"
-            android:parentActivityName=".ListActivity">
+        <activity android:name=".activities.ContentActivity"
+            android:parentActivityName=".activities.ListActivity">
 
         </activity>
-        <activity android:name=".ListActivity">
+        <activity android:name=".activities.ListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

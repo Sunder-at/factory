@@ -1,6 +1,5 @@
-package com.benjinto.sunder.fct;
+package com.benjinto.sunder.fct.adapters;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.benjinto.sunder.fct.Note;
+import com.benjinto.sunder.fct.R;
+import com.benjinto.sunder.fct.presenters.ListPresenter;
 import com.bumptech.glide.Glide;
 
 
