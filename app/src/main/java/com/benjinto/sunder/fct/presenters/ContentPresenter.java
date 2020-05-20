@@ -1,7 +1,7 @@
 package com.benjinto.sunder.fct.presenters;
 
+import com.benjinto.sunder.fct.views.ContentView;
 
-import com.benjinto.sunder.fct.Note;
 
 public class ContentPresenter{
     private ContentView mContentView;
@@ -10,30 +10,11 @@ public class ContentPresenter{
         mContentView = contentView;
     }
 
-    public interface ContentView{
-        void finish();
-        void setTitle(String title);
-        void setDescription(String description);
-        void setImage(byte[] image);
-        void setSupportActionBar(String title);
+    public void updateDataset(){
+        mContentView.updateDataset();
     }
 
-    /**
-     * Ends this {@link com.benjinto.sunder.fct.activities.ContentActivity} instance
-     */
-    public void endActivity() {
-        mContentView.finish();
+    public void onHttpError() {
+        mContentView.showHttpError();
     }
-
-    /**
-     * Sets all elements from content_activity layout to appropriate {@link Note}'s elements
-     * @param note element passed
-     */
-    public void setContent(Note note){
-        mContentView.setTitle(note.getTitle());
-        mContentView.setDescription(note.getDescription());
-        mContentView.setImage(note.getImage());
-        mContentView.setSupportActionBar(note.getTitle());
-    }
-
 }

@@ -1,25 +1,27 @@
 package com.benjinto.sunder.fct.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.benjinto.sunder.fct.Note;
+import com.benjinto.sunder.fct.misc.Note;
 import com.benjinto.sunder.fct.R;
-import com.benjinto.sunder.fct.presenters.ListPresenter;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 
 public class ListedItemsAdapter extends
         RecyclerView.Adapter<ListedItemsAdapter.ListedItemsViewHolder> {
-    private ListPresenter listPresenter;
-
-    public ListedItemsAdapter(ListPresenter listPresenter) {
-        this.listPresenter = listPresenter;
+    private Listener mListener;
+    private GetList mGetList;
+    public ListedItemsAdapter(GetList getList, Listener listener) {
+        mGetList = getList;
+        mListener = listener;
     }
 
     public static class ListedItemsViewHolder extends RecyclerView.ViewHolder{
@@ -36,23 +38,29 @@ public class ListedItemsAdapter extends
     @Override
     public ListedItemsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_note, viewGroup, false);
+                .inflate(R.layout.list_item, viewGroup, false);
 
         return new ListedItemsViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ListedItemsViewHolder holder, int i) {
-        Note note = listPresenter.getNote(i);
+        Note note = mGetList.getList().get(i);
         holder.title.setText(note.getTitle());
         Glide.with(holder.itemView).load(note.getImage()).centerCrop().into(holder.image);
         holder.itemView.setOnClickListener(view -> {
-           listPresenter.startContentActivity(note);
+           mListener.onClick(i);
         });
     }
 
     @Override
     public int getItemCount() {
-        return listPresenter.getDatasetSize();
+        return mGetList.getList().size();
+    }
+    public interface Listener{
+        void onClick(int i);
+    }
+    public interface GetList{
+        List<Note> getList();
     }
 }

@@ -1,4 +1,4 @@
-package com.benjinto.sunder.fct;
+package com.benjinto.sunder.fct.misc;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -22,9 +22,10 @@ public class Note implements Serializable {
     private String urlToImage;
     private String published;
     private byte[] image;
+    private long timeCreated;
 
     public Note(String author, String title, String description,
-                String url, String urlToImage, String published, byte[] image) {
+                String url, String urlToImage, String published, byte[] image, long timeCreated) {
         this.author = author;
         this.title = title;
         this.description = description;
@@ -32,11 +33,14 @@ public class Note implements Serializable {
         this.urlToImage = urlToImage;
         this.published = published;
         this.image = image;
+        this.timeCreated = timeCreated;
     }
 
-    @Generated(hash = 1636246781)
-    public Note(Long id, String author, String title, String description,
-            String url, String urlToImage, String published, byte[] image) {
+
+
+    @Generated(hash = 1790743999)
+    public Note(Long id, String author, String title, String description, String url, String urlToImage,
+            String published, byte[] image, long timeCreated) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -45,11 +49,16 @@ public class Note implements Serializable {
         this.urlToImage = urlToImage;
         this.published = published;
         this.image = image;
+        this.timeCreated = timeCreated;
     }
+
+
 
     @Generated(hash = 1272611929)
     public Note() {
     }
+
+
 
     public Long getId() {
         return id;
@@ -114,6 +123,12 @@ public class Note implements Serializable {
     public void setImage(byte[] image) {
         this.image = image;
     }
+    
+    public long getTimeCreated() {
+        return timeCreated;
+    }
 
-
+    public void setTimeCreated(long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
 }

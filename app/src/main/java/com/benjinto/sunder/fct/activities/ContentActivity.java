@@ -1,75 +1,109 @@
 package com.benjinto.sunder.fct.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.benjinto.sunder.fct.Note;
+import com.benjinto.sunder.fct.misc.App;
+import com.benjinto.sunder.fct.views.ErrorAlertDialog;
+import com.benjinto.sunder.fct.misc.Note;
 import com.benjinto.sunder.fct.R;
+import com.benjinto.sunder.fct.adapters.ContentPagerAdapter;
 import com.benjinto.sunder.fct.presenters.ContentPresenter;
-import com.bumptech.glide.Glide;
+import com.benjinto.sunder.fct.views.ContentView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class ContentActivity extends AppCompatActivity implements ContentPresenter.ContentView{
+public class ContentActivity extends AppCompatActivity implements ContentView {
 
     private ContentPresenter contentPresenter;
+    private ViewPager viewPager;
+    private ContentPagerAdapter contentPagerAdapter;
+    private ErrorAlertDialog errorAlertDialog;
+    private List<String> titleList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_activity);
         contentPresenter =  new ContentPresenter(this);
-        Intent intent = getIntent();
-        Note note = (Note)intent.getSerializableExtra("NOTE");
-        contentPresenter.setContent(note);
+        titleList = new ArrayList<>();
+        int currentItem = getIntent().getIntExtra("NOTE",0);
+        viewPager = findViewById(R.id.content_view_pager);
+        contentPagerAdapter = new ContentPagerAdapter(
+                getSupportFragmentManager(), () -> ((App)getApplication()).getNoteList());
+        viewPager.setAdapter(contentPagerAdapter);
+        viewPager.setCurrentItem(currentItem);
+        getSupportActionBar().setTitle(((App) getApplication()).getNoteList().get(currentItem).getTitle());
+        viewPager.addOnPageChangeListener(new PageListener(this));
+        runOnUiThread(() -> errorAlertDialog = new ErrorAlertDialog(ContentActivity.this));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((App)getApplication()).getHttpManager().registerListener(contentPresenter);
+        updateDataset();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ((App)getApplication()).getHttpManager().unregisterListener(contentPresenter);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                contentPresenter.endActivity();
+                finish();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Set {@link R.id#text_content_title}
-     * @param title String it is set to
-     */
-    @Override
-    public void setTitle(String title){
-        ((TextView)findViewById(R.id.text_content_title)).setText(title);
-    }
-    /**
-     * Set {@link R.id#text_content_body}
-     * @param description String it is set to
-     */
-    public void setDescription(String description){
-        ((TextView)findViewById(R.id.text_content_body)).setText(description);
-    }
-    /**
-     * Set {@link R.id#image_content_view}
-     * @param image Image it is set to
-     */
-    public void setImage(byte[] image){
-        Glide.with(this).load(image).into((ImageView)findViewById(R.id.image_content_view));
-    }
-    /**
-     * Set {@link R.layout#content_activity}'s {@link android.support.v7.app.ActionBar}
-     * @param title String its set to
-     */
-    public void setSupportActionBar(String title){
-        getSupportActionBar().setTitle(title);
+        return false;
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        contentPresenter.endActivity();
+        finish();
     }
 
+    @Override
+    public void updateDataset(){
+        contentPagerAdapter.notifyDataSetChanged();
+        titleList.clear();
+        for (Note note :((App)getApplication()).getNoteList()) {
+            titleList.add(note.getTitle());
+        }
+    }
+
+    @Override
+    public void showHttpError() {
+        runOnUiThread(() -> errorAlertDialog.show());
+    }
+
+    private class PageListener implements ViewPager.OnPageChangeListener{
+        AppCompatActivity mActivity;
+        public PageListener(AppCompatActivity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            mActivity.getSupportActionBar().setTitle(titleList.get(position));
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
 }
